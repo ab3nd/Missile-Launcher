@@ -1,0 +1,46 @@
+Version 0.4.2
+	Avoid triggering the "ignore duplicate command" check on fire, since
+	that command is auto-stopped. Now movement between fire isn't needed.
+
+Version 0.4.1
+	Implement diagonal movement commands.
+	Thanks to Jonas Andradas <j.andradas at gmail.com>!
+
+Version 0.4
+	Implement usb_interrupt_read to check if we have reached a maximum
+	position and stop movement to avoid breaking the missile launcher.
+	(This included rearranging code to have a worker child who does the
+	missile controlling since it needs to be able to spin in a loop
+	while moving. Doing this in the main thread/process would lock up
+	the user-interface.)
+
+Version 0.3.2
+	Handle key repeat kicking in after a while when controlling the device
+	with the keyboard and doing "big movements".
+	Raise delay to 7 seconds again for automatically stopping the device
+	after initiating the firing sequence.
+	Added a nicer error dialog (intead of "assertion failed" console
+	output) shown when device not plugged in.
+
+Version 0.3.1
+	Change debug "control message returned" printout to a warning
+	message that's only printed when error is returned.
+	Add About dialog.
+	Update TODO items in the README file.
+	Added keyboard shortcuts for control:
+		up/down/left/right on arrows or numeric keyboard 8/2/4/6,
+		fire on numeric keyboard 5.
+
+Version 0.3
+	Wrote GTK+ interface using Glade and imported control code
+	from previous version.
+
+Version 0.2
+	cleaned up source, made it possible to control the device.
+
+Version 0.1
+	Captured up, down, left, right, fire with Benoits USB Sniffer and
+	converted it to C using lindi's usbsnoop2libusb.pl script.
+	
+	http://benoit.papillault.free.fr/usbsnoop/
+	http://protu.it.helsinki.fi/~lindi/usb/usbsnoop2libusb.pl

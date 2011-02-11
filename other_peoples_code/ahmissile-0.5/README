@@ -1,0 +1,81 @@
+Dream Cheeky USB Missile Launcher for Linux.
+
+!!! This is unofficial software !!!
+This software is in no way affiliated or related to Dream Cheeky / Dream Link.
+It has been produced by looking at the USB bus while running the Windows
+program for the device. It _seems_ to work, but noone knows if it will
+destroy your toy. Consider yourself warned!
+
+
+lsusb vendor/device id example for supported device:
+Bus 001 Device 013: ID 1941:8021 Dream Cheeky USB Missile Launcher
+
+Since version 0.5 the new model (which looks identical) is also supported
+thanks to Philipp Stern <info@getdigital.de> who sent me one:
+Bus 002 Device 049: ID 0a81:0701 Chesen Electronics Corp. 
+
+
+
+Copyright (c) 2007 Andreas Henriksson <andreas@fatal.se>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+
+
+Dependencies:
+	libusb (http://libusb.sf.net)
+	GTK+ (http://www.gtk.org)
+
+Current status:
+	- basic movement (up, down, left, right, fire) works.
+	- basic safety implemented (stop when reaching max position).
+	- tested on Debian GNU/Linux Unstable AMD64 (and
+	  older versions on Debian GNU/Linux 4.0 Etch PowerPC).
+	- Device gets claimed by the kernel usbhid driver, try running
+	  this program as root if you have problems to give it 
+	  permissions to detach the attached drivers on startup.
+	  See example udev rules in contrib/ to get permissions
+	  to the missile launcher as a regular user.
+
+TODO:
+
+The program is not actively developed. Here's a list of things that I've
+thought would be nice to have but will probably not implement. The main
+reason this exists is to not forget the ideas, or if someone else wants
+to have ideas for patches that I'd be happy if I received. :)
+
+	== core ==
+	- find out how to *reliably* poll the device (tested only on old
+	  device, maybe the new one can be polled without problem) to 
+	  detect and stop the fire sequence as soon as an arrow has been
+	  fired instead of just sleeping until a timeout is triggered.
+	- Robustness fixes.
+	  . Cache max positions to avoid triggering tiny movements again and
+	    again after reaching a max position.
+	  . Handle usb message errors (sleep to await recovery? retry?).
+	- implement "goto-fixed-position" (maxleft, maxtop, ...).
+	- implement "reset".
+	== interface ==
+	- add nice dialog for when attaching/claiming device fails.
+	- make it possible to record commands and then play them back.
+	- add posibility to go to fixed positions like "top left corner"
+	- add sound effects playback function.
+	== not (currently) planned ==
+	- implement support for multiple missile launchers.
+	- restructure into a true missile-control backend library.
+	- implement web interface.
+	- implement motion-sensoring webcam.
+
