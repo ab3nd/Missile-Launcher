@@ -14,7 +14,7 @@
 
 using namespace std;
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
 	MissileLauncher mc;
 	if(mc.init() == 0){
@@ -22,6 +22,6 @@ int main(int argc, char** argv)
 	}else{
 		cerr << "Failed to initialize missile launcher" << endl;
 	}
-
+	mc.deinit();
 	return 0;
 }

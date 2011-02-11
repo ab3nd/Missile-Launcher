@@ -17,6 +17,7 @@ class MissileLauncher
 {
 public:
 	int init();
+	void deinit();
 	void fire();
 private:
 	usb_dev_handle* launcher;

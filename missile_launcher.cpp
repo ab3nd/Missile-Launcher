@@ -12,7 +12,13 @@
 
 void MissileLauncher::fire()
 {
+	cout << "Fire ze missiles!!!" << endl;
+}
 
+void MissileLauncher::deinit()
+{
+	usb_release_interface(launcher, 0);
+	usb_close(launcher);
 }
 
 int MissileLauncher::init()
@@ -20,17 +26,8 @@ int MissileLauncher::init()
 	struct usb_bus *busses;
 
 	usb_init();
-	if (usb_find_busses() != 0)
-	{
-		cerr << "Failed to find USB buses" << endl;
-		return 1;
-	}
-
-	if (usb_find_devices() != 0)
-	{
-		cerr << "Failed to find USB devices" << endl;
-		return 1;
-	}
+	usb_find_busses();
+	usb_find_devices();
 
 	busses = usb_get_busses();
 
@@ -43,11 +40,26 @@ int MissileLauncher::init()
 
 		for (dev = bus->devices; dev; dev = dev->next)
 		{
-			/* Check if this device is a missile launcher */
-			if (dev->descriptor.idVendor == 6465)
+			/* Check if this device is a missile launcher  */
+			if (dev->descriptor.idVendor == 0x1941)
 			{
 				launcher = usb_open(dev);
 
+				//Make sure it's not claimed
+				char driverName[32];
+				int retval = usb_get_driver_np(launcher, 0, driverName, 31);
+				if (retval == 0)
+				{
+					cout << "Claimed by " << driverName << endl;
+					retval = usb_detach_kernel_driver_np(launcher, 0);
+					if (retval)
+					{
+						cout << driverName << " can't be detached" << endl;
+						return 1;
+					}
+				}
+
+				//Claim it ourselves
 				int claimed = usb_claim_interface(launcher, 0);
 				if (claimed == 0)
 				{
