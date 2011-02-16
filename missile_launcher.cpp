@@ -4,7 +4,7 @@
  *  Created on: Feb 11, 2011
  *      Author: ams
  *
- *  Creates and maintains info about a Dream Cheeky Missile Launcher.
+ *  OO interface to the Dream Cheeky Missile Launcher
  *
  */
 
@@ -12,7 +12,82 @@
 
 void MissileLauncher::fire()
 {
-	cout << "Fire ze missiles!!!" << endl;
+	cout << "Fire zee missiles!!!" << endl;
+	//need to wait 6.77 seconds to fire
+	struct timespec toWait;
+	toWait.tv_sec = 6;
+	toWait.tv_nsec = 770000000;
+
+	const struct timespec* delay = &toWait;
+	struct timespec* remainder;
+
+	//Start launch sequence and wait for launch
+	if (sendMsg(FIRE) < 0)
+	{
+		cerr << "Could not fire." << endl;
+		return;
+	}
+	nanosleep(delay, remainder);
+
+	//Stop, so no more missiles launch
+	stop();
+}
+
+void MissileLauncher::turn(MissileCmd direction, double delay)
+{
+	if(direction == FIRE)
+	{
+		fire();
+	}
+	else if(direction == STOP)
+	{
+		stop();
+	}
+	else
+	{
+		//Convert the delay into a timespec
+		struct timespec toWait;
+		toWait.tv_sec =  (int)delay;
+		toWait.tv_nsec = (delay - toWait.tv_sec) * 100000000;
+
+		const struct timespec* delay = &toWait;
+		struct timespec* remainder;
+
+		//Start turn and wait for movement
+		sendMsg(direction);
+		nanosleep(delay, remainder);
+
+		//Stop turning
+		stop();
+	}
+}
+
+void MissileLauncher::stop(){
+	int ret = sendMsg(STOP);
+	if(ret < 0)
+	{
+		cerr << "Cannot stop, error: " << ret << endl;
+	}
+}
+
+int MissileLauncher::sendMsg(MissileCmd control)
+{
+	char msg[8];
+
+	for( int ii = 0; ii < 8; ii++)
+	{
+		msg[ii] = 0x0;
+	}
+
+	//send control message
+	msg[0] = control;
+	int ret = usb_control_msg(launcher, 0x21, 0x9, 0x200, 0, msg, 8, 1000);
+	if(ret < 0 )
+	{
+		cerr << "Cannot send command, error:" << ret << endl;
+	}
+
+	return ret;
 }
 
 void MissileLauncher::deinit()
@@ -57,6 +132,7 @@ int MissileLauncher::init()
 						cout << driverName << " can't be detached" << endl;
 						return 1;
 					}
+					cout << "Detached " << driverName << endl;
 				}
 
 				//Claim it ourselves

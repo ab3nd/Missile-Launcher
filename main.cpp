@@ -18,7 +18,11 @@ int main(int argc, char* argv[])
 {
 	MissileLauncher mc;
 	if(mc.init() == 0){
-		mc.fire();
+		mc.turn(LEFT, 1.5);
+		mc.turn(UP, 1);
+		mc.turn(RIGHT, 1.5);
+		mc.turn(DOWN, 1);
+		//mc.fire();
 	}else{
 		cerr << "Failed to initialize missile launcher" << endl;
 	}
