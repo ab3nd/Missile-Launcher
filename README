@@ -1,0 +1,14 @@
+This is a C++ object that controls a Dream Cheeky USB missile launcher over the USB port. 
+
+The launcher is apparently no longer sold by Dream Cheeky, but looks like this:
+http://www.amazon.com/Unknown-USB-Missile-Launcher/dp/B000XYR2CM
+
+Thanks to:
+http://www.amctrl.com/rocketlauncher.html
+http://www.fatal.se/fulhack/ahmissile/README
+
+I somehow completely missed these while googling around:
+http://manpages.ubuntu.com/manpages/lucid/man6/pyrocket.6.html
+http://sourceforge.net/projects/rl-module/
+http://kim.tensta.gannert.se/projects/launcher/
+
