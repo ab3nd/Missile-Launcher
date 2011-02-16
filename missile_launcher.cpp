@@ -35,36 +35,52 @@ void MissileLauncher::fire()
 
 void MissileLauncher::turn(MissileCmd direction, double delay)
 {
-	if(direction == FIRE)
+	if (direction == FIRE)
 	{
 		fire();
 	}
-	else if(direction == STOP)
+	else if (direction == STOP)
 	{
 		stop();
 	}
 	else
 	{
-		//Convert the delay into a timespec
-		struct timespec toWait;
-		toWait.tv_sec =  (int)delay;
-		toWait.tv_nsec = (delay - toWait.tv_sec) * 100000000;
+		if (delay = 0)
+		{
+			/* Start moving. This means it keeps moving until you tell it to stop.
+			 * Good for feedback loops, bad for not hitting the stops and abusing
+			 * the slip clurch.
+			 */
+			sendMsg(direction);
+		}
+		else
+		{
+			/* Move for the specified time period, then stop.
+			 * This is good for making little scripts, but assumes you know
+			 * the pose of the gun. It's a shame there's little to no feedback from it.
+			 */
+			//Convert the delay into a timespec
+			struct timespec toWait;
+			toWait.tv_sec = (int) delay;
+			toWait.tv_nsec = (delay - toWait.tv_sec) * 100000000;
 
-		const struct timespec* delay = &toWait;
-		struct timespec* remainder;
+			const struct timespec* delay = &toWait;
+			struct timespec* remainder;
 
-		//Start turn and wait for movement
-		sendMsg(direction);
-		nanosleep(delay, remainder);
+			//Start turn and wait for movement
+			sendMsg(direction);
+			nanosleep(delay, remainder);
 
-		//Stop turning
-		stop();
+			//Stop turning
+			stop();
+		}
 	}
 }
 
-void MissileLauncher::stop(){
+void MissileLauncher::stop()
+{
 	int ret = sendMsg(STOP);
-	if(ret < 0)
+	if (ret < 0)
 	{
 		cerr << "Cannot stop, error: " << ret << endl;
 	}
@@ -74,7 +90,7 @@ int MissileLauncher::sendMsg(MissileCmd control)
 {
 	char msg[8];
 
-	for( int ii = 0; ii < 8; ii++)
+	for (int ii = 0; ii < 8; ii++)
 	{
 		msg[ii] = 0x0;
 	}
@@ -82,7 +98,7 @@ int MissileLauncher::sendMsg(MissileCmd control)
 	//send control message
 	msg[0] = control;
 	int ret = usb_control_msg(launcher, 0x21, 0x9, 0x200, 0, msg, 8, 1000);
-	if(ret < 0 )
+	if (ret < 0)
 	{
 		cerr << "Cannot send command, error:" << ret << endl;
 	}
