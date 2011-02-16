@@ -45,7 +45,7 @@ void MissileLauncher::turn(MissileCmd direction, double delay)
 	}
 	else
 	{
-		if (delay = 0)
+		if (delay == 0)
 		{
 			/* Start moving. This means it keeps moving until you tell it to stop.
 			 * Good for feedback loops, bad for not hitting the stops and abusing
